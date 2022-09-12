@@ -1,0 +1,20 @@
+{% extends '_template.html' %}
+{% block content %}
+    <h1 class="my-3 text-center">Speed Data Viewer and API</h1>
+    <form method="POST" action="">
+        <label for="username" class="form-label mb-3">Username:</label>
+        <input name="username" type="text" class="form-control mb-3">
+        <label for="password" class="form-label mb-3">Password</label>
+        <input name="password" type="password" class="form-control mb-3">
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="" id="remember-login">
+            <label class="form-check-label" for="remember-login">
+                Remember Login.
+            </label>
+        </div>
+        <button type="submit" class="form-control btn btn-primary mb-3">Login</button>
+    </form>
+    <form method="POST" action="">
+        <button type="submit" class="form-control btn btn-secondary mb-3">Register Account</button>
+    </form>
+{% endblock %}
