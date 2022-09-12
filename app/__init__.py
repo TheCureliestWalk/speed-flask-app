@@ -10,7 +10,8 @@ db = SQLAlchemy(app)
 
 app.config['DEBUG_MODE'] = True
 app.config['SECRET_KEY'] = 'E09D9689D8511DA1D1575720FF7A2B99CC1494BA'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_BINDS'] = {'local': 'sqlite:///database.db'}
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 # Routes
 
