@@ -27,7 +27,7 @@ def home():  # put application's code here
 def getData():
     data = []
     with InfluxDBClient(url="http://10.101.118.91:8086", token=token, org=org) as client:
-        query = 'from(bucket: "{}") |> range(start: -1h)'.format(bucket)
+        query = 'from(bucket: "{}") |> range(start: -1d)'.format(bucket)
         tables = client.query_api().query(query, org=org)
         for table in tables:
             for i, record in enumerate(table.records):
@@ -40,6 +40,22 @@ def getData():
         client.close()
         return jsonify(data)
 
+@app.route('/get/<speed_id>', methods=['GET'])
+def getDataByTime(speed_id):
+    data = []
+    with InfluxDBClient(url="http://10.101.118.91:8086", token=token, org=org) as client:
+        query = 'from(bucket: "{}") |> range(start: -30d) |> filter(fn: (r) => r._measurement == "{}"'.format(bucket, speed_id)
+        tables = client.query_api().query(query, org=org)
+        for table in tables:
+            for i, record in enumerate(table.records):
+                # Print on console
+                # print(record["_measurement"], record["_field"], record["_value"])
+                # measurement.append(record["_measurement"])
+                # field.append(record["_field"])
+                # value.append(record["_value"])
+                data.append({ "id": i, "_measurement": record["_measurement"], "_field": record["_field"], '_value': record["_value"], "timestamp": record["_time"]})
+        client.close()
+        return jsonify(data)
 
 @app.route('/<measurement>/<data_key>/<data_value>/<field_key>/<field_value>', methods=['POST'])
 def writeData(measurement, data_key, data_value, field_key, field_value):
