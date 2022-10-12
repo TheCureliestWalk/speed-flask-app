@@ -27,7 +27,7 @@ def home():  # put application's code here
 def getData():
     data = []
     with InfluxDBClient(url="http://10.101.118.91:8086", token=token, org=org) as client:
-        query = 'from(bucket: "{}") |> range(start: -1d)'.format(bucket)
+        query = 'from(bucket: "{}") |> range(start: -5m)'.format(bucket)
         tables = client.query_api().query(query, org=org)
         for table in tables:
             for i, record in enumerate(table.records):
@@ -36,7 +36,8 @@ def getData():
                 # measurement.append(record["_measurement"])
                 # field.append(record["_field"])
                 # value.append(record["_value"])
-                data.append({ "id": i, "_measurement": record["_measurement"], "_field": record["_field"], '_value': record["_value"], "timestamp": record["_time"]})
+                #data.append({ "id": i, "_measurement": record["_measurement"], "_field": record["_field"], '_value': record["_value"], "timestamp": record["_time"]})
+                data.append({record["_field"]: record["_value"]})
         client.close()
         return jsonify(data)
 
@@ -44,7 +45,7 @@ def getData():
 def getDataByTime(speed_id):
     data = []
     with InfluxDBClient(url="http://10.101.118.91:8086", token=token, org=org) as client:
-        query = 'from(bucket: "{}") |> range(start: -30d) |> filter(fn: (r) => r._measurement == "{}"'.format(bucket, speed_id)
+        query = f'from(bucket: "{bucket}") |> range(start: -10m) |> filter(fn: (r) => r["_measurement"] == "{speed_id}")'
         tables = client.query_api().query(query, org=org)
         for table in tables:
             for i, record in enumerate(table.records):
@@ -53,7 +54,7 @@ def getDataByTime(speed_id):
                 # measurement.append(record["_measurement"])
                 # field.append(record["_field"])
                 # value.append(record["_value"])
-                data.append({ "id": i, "_measurement": record["_measurement"], "_field": record["_field"], '_value': record["_value"], "timestamp": record["_time"]})
+                data.append({i: record["_value"]})
         client.close()
         return jsonify(data)
 
